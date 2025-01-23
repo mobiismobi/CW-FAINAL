@@ -14,6 +14,28 @@
 \maketitle
 
 
+\\textbf{Introduction}
+\\
+\\This document provides answers to the assignment questions.
+
+\clearpage
+
+\documentclass[a4paper,12pt]{article}
+\usepackage{graphicx}  % Package to include images
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref} 
+
+
+\title{\textbf{Final Assignment: Integration of Tools and Practices}}
+\author{Mobina Barghamadi\\401541209}
+\date{\today}
+
+\begin{document}
+
+
+\maketitle
+
+
 \\\textbf{Introduction}
 \\
 \\This document provides answers to the assignment questions.
@@ -21,4 +43,190 @@
 \clearpage
 
 
+\section{Git and GitHub}
+
+\subsection{Repository Initialization and Commits}
+Write about how you set up the repository for this assignment. Explain every step in detail.
+\\
+\\\textbf{1. Create a New Repository on GitHub}
+\begin{itemize}
+    \item Logged in to my GitHub account and navigated to the "Repositories" section.
+    \item Clicked on the "New" button to create a new repository named \texttt{CW-Final}.
+    \item Made the repository public and initialized it with a README.md file.
+\end{itemize}
+\\
+\textbf{2. Clone the Repository Locally}
+\begin{itemize}
+    \item Copied the repository’s URL from GitHub.
+    \item Opened a terminal and used the following command to clone the repository:
+    \begin{verbatim}
+    git clone https://github.com/mobiismobi/CW-FAINAL.git
+    \end{verbatim}
+\end{itemize}
+\\
+\\\textbf{3. Add Your LaTeX Files}
+\\Create your .tex file.
+\\
+\\\textbf{4. Track Changes with Git}
+
+\begin{itemize}
+    \item Used the following commands to track changes:
+    \begin{verbatim}
+    git status
+    git add .
+    git commit -m "Initial commit: Add LaTeX files for assignment"
+    git push origin main
+    \end{verbatim}
+\end{itemize}
+\\Use git status to check the current state of your repository.
+\\Stage the changes with git add .
+\\Commit the changes git commit -m "Initial commit: Add LaTeX files for assignment"
+\\Push your committed changes to the GitHub repository  git push origin main
+\\
+\\
+\\
+\\
+\subsection{GitHub Actions for LaTeX Compilation}
+Provide a walkthrough of setting up GitHub Actions to automatically compile your LaTeX document and any challenges you encountered.
+\\
+\\\textbf{1.Set Up GitHub Actions Workflow}
+\\GitHub Actions uses YAML files to define workflows. These YAML files are typically placed in the .github/workflows/ directory of your repository.
+\\To create the workflow for LaTeX compilation, follow these steps:
+\\Navigate to Your Repository: Open the GitHub repository where your LaTeX project is stored.
+\\Create a New Directory for Workflows: Inside your repository, create a .github/workflows/ directory if it doesn’t already exist.
+\\Create the Workflow File: Create a new YAML file (e.g., latex.yml) in the .github/workflows/ directory.
+\\
+\\\textbf{2. Write the Workflow YAML}
+\\I use the template that was in your github:
+   \begin{verbatim} 
+   name: Release Compiled PDF 
+  on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  build_latex:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: main.tex
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: $${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: {{ github.ref }}
+          release_name: Release {{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: $${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: $${{ steps.create_release.outputs.upload_url }} 
+          asset_path: ./main.pdf
+          asset_name: main.pdf
+          asset_content_type: pdf
+          \end{verbatim}
+\\
+\\
+\\\textbf{3.Commit the Workflow File}
+\\Once the latex.yml file is created, add and commit the file to your repository:  
+\\git add .github/workflows/latex.yml
+\\git commit -m "Add GitHub Actions workflow for LaTeX compilation"
+\\git push origin main
+\\After pushing the changes to GitHub, navigate to the Actions tab in your GitHub repository.
+You should see the workflow listed, and it will trigger whenever you push to the main branch or create a pull request to main.
+Check the logs of the workflow to ensure the LaTeX compilation process works correctly.
+\\
+\\\textbf{4.Accessing the Compiled PDF}
+\\Once the workflow completes, you can download the compiled PDF from the Actions tab by selecting the relevant run and downloading the artifact (finalassignment.pdf).
+
+\clearpage
+\section{Exploration Task}
+\subsection{Vim Advanced Features}
+Explore and document 3 advanced features of Vim that were not covered in class.
+
+\textbf{1. Macros: Automating Repetitive Tasks}
+\\In Vim, macros allow you to automate repetitive actions by recording them and playing them back when needed. Record a macro with `qa`, perform the actions, then replay with `@a`.
+
+\textbf{2. Buffers and Windows}
+\\Vim allows working with multiple files simultaneously. Use `:split` to split windows, `:b <buffer-number>` to switch buffers.
+
+\\\textbf{3. Search and Replace with Regular Expressions}
+\\Vim supports powerful search and replace using regular expressions:
+\\Search with /pattern and navigate matches with n (next) or N (previous).
+Replace with :
+\texttt{\%s/old/new/g for global replacement or \%s/old/new/gc to confirm each one}.
+
+\\
+\\
+\subsection{Memory profiling}
+\\
+\subsubsection{Memory Leak}
+Memory leaks occur when a program fails to release memory after use, causing unnecessary consumption of memory over time. This can happen when dynamically allocated memory is not freed properly.
+
+\subsubsection{Memory Profilers}
+Valgrind is a tool that helps detect memory leaks and invalid memory accesses in C/C++ programs. It provides detailed reports on memory usage and potential issues.
+
+\subsection{GNU/Linux Bash Scripting}
+\\
+\subsubsection{fzf}
+Read about a handy CLI tool called fzf and answer the following questions:
+\\• What is fuzzy searching? Give a short description.
+\\Fuzzy searching is a technique that allows you to find matches in a list of items even when the search term is not an exact match. It works by finding approximate matches, handling typos, missing characters, or partial input. Instead of requiring precise matches, it ranks results based on how closely they match the input, making it a flexible and user-friendly way to search through data.
+\\Fuzzy search tools, like fzf, analyze patterns in the input and compare them against a list of potential matches. This is particularly helpful for:
+
+\\Searching large files or directories.
+
+\\Quickly locating commands or files with partial input.
+
+\\Handling human errors like typos or incomplete entries.
+\\
+\\• Install \texttt{fzf} on your machine and give a description of what the following command does: 
+\texttt{ls | fzf}
+
+\\When you run \texttt{ls | fzf}, a list of files and directories from the current directory is displayed in an interactive interface.
+\\You can start typing to filter the list based on partial matches, even if your input is not an exact match.
+\\Use the arrow keys to navigate the matches, and press Enter to select an item.
+\\This command is useful for navigating and selecting files or directories more efficiently, especially in directories with many items.
+\subsubsection{Using fzf to find your favorite PDF}
+1. We first need to list the directory of all the files with the extension .PDF. Write a
+command to list the directory of all the files with the extension .PDF
+HINT: use the command fd for this purpose.
+\\\texttt{fd --extension pdf}
+\\or
+\\\texttt{fd -i --extension pdf}
+\\This command will recursively search through the current directory and its subdirectories for .pdf files and list them.
+\\
+\\2. Now we have to select the PDF we want using fzf. Write a command to use fzf to
+select a PDF from the data we gathered above.
+\\\texttt{fd --extension pdf | fzf}
+\\\texttt{fd -i --extension pdf}: This lists all .pdf files in the current directory and subdirectories.
+\texttt{| fzf}: This pipes the output of fd (the list of PDF files) to fzf, allowing you to interactively select a file from the list.
+\\
+\\
+\subsubsection{Opening the file using Zathura}
+Now that have selected which PDF we want to open, we can use a very minimalistic
+program called Zathura to open it. Write a command that uses the commands above to
+open the file using Zathura.
+\\\texttt{zathura \$(fd --extension pdf \mid fzf)}
+\\\texttt{With this command, the PDF you select will be opened directly in Zathura.}
+
+\clearpage
+
+
+
 \end{document}
+
