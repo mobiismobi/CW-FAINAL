@@ -16,3 +16,5 @@ This repository was created for the final assignment of the **Computer Workshop*
 1. Clone the repository:
    ```bash
    git clone https://github.com/mobiismobi/CW-FAINAL.git
+# Triggering workflow
+
